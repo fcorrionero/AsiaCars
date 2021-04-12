@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	v, err := domain.NewVehicle("12345678901234567", "m3a", "MBMR")
+	v, err := domain.NewVehicle("12345678901234567", "", "MBMR")
 	fmt.Println(err)
 	fmt.Println(v)
 }
