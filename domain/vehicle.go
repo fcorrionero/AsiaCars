@@ -11,7 +11,7 @@ type Vehicle struct {
 	brand              string
 	category           string
 	inFleetDate        time.Time
-	deviceSerialNumber string
+	DeviceSerialNumber string
 	batteryLevel       int
 	fuelLevel          int
 	currentMileage     int
@@ -34,6 +34,7 @@ func NewVehicle(chassisNbr string, licensePlate string, category string) (*Vehic
 	v.chassisNbr = chassisNbr
 	v.licensePlate = licensePlate
 	v.category = category
+	v.inFleetDate = time.Now()
 
 	return v, nil
 }
@@ -56,4 +57,32 @@ func checkCategory(category string) bool {
 	cVal, _ := regexp.MatchString(regex, category)
 
 	return cVal
+}
+
+func (v *Vehicle) UpdateBatteryLevel(bL int) error {
+	if bL < 0 {
+		return NewDomainError("battery level can not be a negative number")
+	}
+	v.batteryLevel = bL
+	return nil
+}
+
+func (v *Vehicle) UpdateFuelLevel(fL int) error {
+	if fL < 0 {
+		return NewDomainError("fuel level can not be a negative number")
+	}
+	v.fuelLevel = fL
+	return nil
+}
+
+func (v *Vehicle) UpdateCurrentMileage(cM int) error {
+	if cM < 0 {
+		return NewDomainError("current mileage can not be a negative number")
+	}
+	v.currentMileage = cM
+	return nil
+}
+
+func (v *Vehicle) GetChassisNumber() string {
+	return v.chassisNbr
 }
