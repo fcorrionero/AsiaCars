@@ -24,13 +24,14 @@ func InitializeVehicleController(repository domain.VehicleRepository) http.Vehic
 	inFleetVehicle := operations.NewInFleetVehicle(repository)
 	installVehicle := operations.NewInstallVehicle(repository)
 	updateBattery := telemetry.NewUpdateBattery(repository)
-	vehicleController := http.NewVehicleController(inFleetVehicle, installVehicle, updateBattery)
+	updateFuel := telemetry.NewUpdateFuel(repository)
+	updateMileage := telemetry.NewUpdateMileage(repository)
+	vehicleController := http.NewVehicleController(inFleetVehicle, installVehicle, updateBattery, updateFuel, updateMileage)
 	return vehicleController
 }
 
 // wire.go:
 
 func NewMemoryVehicleRepository() domain.VehicleRepository {
-	mRepo := memory.New()
-	return mRepo
+	return memory.New()
 }

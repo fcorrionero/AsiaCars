@@ -17,11 +17,17 @@ func InitializeVehicleRepository() domain.VehicleRepository {
 }
 
 func InitializeVehicleController(repository domain.VehicleRepository) http.VehicleController {
-	wire.Build(http.NewVehicleController, operations.NewInFleetVehicle, operations.NewInstallVehicle, telemetry.NewUpdateBattery)
+	wire.Build(
+		http.NewVehicleController,
+		operations.NewInFleetVehicle,
+		operations.NewInstallVehicle,
+		telemetry.NewUpdateBattery,
+		telemetry.NewUpdateFuel,
+		telemetry.NewUpdateMileage,
+	)
 	return http.VehicleController{}
 }
 
 func NewMemoryVehicleRepository() domain.VehicleRepository {
-	mRepo := memory.New()
-	return mRepo
+	return memory.New()
 }

@@ -79,10 +79,14 @@ func (v *Vehicle) UpdateCurrentMileage(cM int) error {
 	if cM < 0 {
 		return NewDomainError("current mileage can not be a negative number")
 	}
-	v.currentMileage = cM
+	v.currentMileage += cM
 	return nil
 }
 
 func (v *Vehicle) GetChassisNumber() string {
 	return v.chassisNbr
+}
+
+func (v Vehicle) GetFuelLevel() int {
+	return v.fuelLevel
 }

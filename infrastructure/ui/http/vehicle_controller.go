@@ -14,13 +14,22 @@ type VehicleController struct {
 	InFleetVehicle operations.InFleetVehicle
 	InstallVehicle operations.InstallVehicle
 	UpdateBattery  telemetry.UpdateBattery
+	UpdateFuel     telemetry.UpdateFuel
+	UpdateMileage  telemetry.UpdateMileage
 }
 
-func NewVehicleController(iFV operations.InFleetVehicle, iV operations.InstallVehicle, uB telemetry.UpdateBattery) VehicleController {
+func NewVehicleController(
+	iFV operations.InFleetVehicle,
+	iV operations.InstallVehicle,
+	uB telemetry.UpdateBattery,
+	uF telemetry.UpdateFuel,
+	uM telemetry.UpdateMileage) VehicleController {
 	return VehicleController{
 		InFleetVehicle: iFV,
 		InstallVehicle: iV,
 		UpdateBattery:  uB,
+		UpdateFuel:     uF,
+		UpdateMileage:  uM,
 	}
 }
 
@@ -28,6 +37,9 @@ func HandleRequests(apiPort string, controller VehicleController) error {
 	http.HandleFunc("/hello", controller.Hello)
 	http.HandleFunc("/infleet", controller.InFleet)
 	http.HandleFunc("/install", controller.InstallDevice)
+	http.HandleFunc("/battery", controller.Battery)
+	http.HandleFunc("/fuel", controller.Fuel)
+	http.HandleFunc("/mileage", controller.Mileage)
 	err := http.ListenAndServe(":"+apiPort, nil)
 	return err
 }
@@ -87,6 +99,87 @@ func (c VehicleController) InstallDevice(w http.ResponseWriter, r *http.Request)
 	if nil != err {
 		log.Printf("Error installing vehicle: %v", err)
 		w.WriteHeader(404)
+		return
+	}
+	w.WriteHeader(200)
+}
+
+func (c VehicleController) Battery(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		w.WriteHeader(405) // Return 405 Method Not Allowed.
+		return
+	}
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		log.Printf("Body read error, %v", err)
+		w.WriteHeader(500) // Return 500 Internal Server Error.
+		return
+	}
+
+	var schema telemetry.BatterySchema
+	if err = json.Unmarshal(body, &schema); nil != err {
+		log.Printf("Body parse error, %v", err)
+		w.WriteHeader(400) // Return 400 Bad Request.
+		return
+	}
+	err = c.UpdateBattery.Handle(schema)
+	if nil != err {
+		log.Printf("Error updating battery value: %v", err)
+		w.WriteHeader(400)
+		return
+	}
+	w.WriteHeader(200)
+}
+
+func (c VehicleController) Fuel(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		w.WriteHeader(405) // Return 405 Method Not Allowed.
+		return
+	}
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		log.Printf("Body read error, %v", err)
+		w.WriteHeader(500) // Return 500 Internal Server Error.
+		return
+	}
+
+	var schema telemetry.FuelSchema
+	if err = json.Unmarshal(body, &schema); nil != err {
+		log.Printf("Body parse error, %v", err)
+		w.WriteHeader(400) // Return 400 Bad Request.
+		return
+	}
+	err = c.UpdateFuel.Handle(schema)
+	if nil != err {
+		log.Printf("Error updating fuel value: %v", err)
+		w.WriteHeader(400)
+		return
+	}
+	w.WriteHeader(200)
+}
+
+func (c VehicleController) Mileage(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		w.WriteHeader(405) // Return 405 Method Not Allowed.
+		return
+	}
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		log.Printf("Body read error, %v", err)
+		w.WriteHeader(500) // Return 500 Internal Server Error.
+		return
+	}
+
+	var schema telemetry.MileageSchema
+	if err = json.Unmarshal(body, &schema); nil != err {
+		log.Printf("Body parse error, %v", err)
+		w.WriteHeader(400) // Return 400 Bad Request.
+		return
+	}
+	err = c.UpdateMileage.Handle(schema)
+	if nil != err {
+		log.Printf("Error updating mileage: %v", err)
+		w.WriteHeader(400)
 		return
 	}
 	w.WriteHeader(200)
