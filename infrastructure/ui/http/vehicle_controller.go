@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/fcorrionero/europcar/application/operations"
+	"github.com/fcorrionero/europcar/application/telemetry"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -12,12 +13,14 @@ import (
 type VehicleController struct {
 	InFleetVehicle operations.InFleetVehicle
 	InstallVehicle operations.InstallVehicle
+	UpdateBattery  telemetry.UpdateBattery
 }
 
-func NewVehicleController(iFV operations.InFleetVehicle, iV operations.InstallVehicle) VehicleController {
+func NewVehicleController(iFV operations.InFleetVehicle, iV operations.InstallVehicle, uB telemetry.UpdateBattery) VehicleController {
 	return VehicleController{
 		InFleetVehicle: iFV,
 		InstallVehicle: iV,
+		UpdateBattery:  uB,
 	}
 }
 

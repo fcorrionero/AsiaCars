@@ -7,6 +7,7 @@ package main
 
 import (
 	"github.com/fcorrionero/europcar/application/operations"
+	"github.com/fcorrionero/europcar/application/telemetry"
 	"github.com/fcorrionero/europcar/domain"
 	"github.com/fcorrionero/europcar/infrastructure/memory"
 	"github.com/fcorrionero/europcar/infrastructure/ui/http"
@@ -22,7 +23,8 @@ func InitializeVehicleRepository() domain.VehicleRepository {
 func InitializeVehicleController(repository domain.VehicleRepository) http.VehicleController {
 	inFleetVehicle := operations.NewInFleetVehicle(repository)
 	installVehicle := operations.NewInstallVehicle(repository)
-	vehicleController := http.NewVehicleController(inFleetVehicle, installVehicle)
+	updateBattery := telemetry.NewUpdateBattery(repository)
+	vehicleController := http.NewVehicleController(inFleetVehicle, installVehicle, updateBattery)
 	return vehicleController
 }
 

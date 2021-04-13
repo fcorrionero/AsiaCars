@@ -4,6 +4,7 @@ package main
 
 import (
 	"github.com/fcorrionero/europcar/application/operations"
+	"github.com/fcorrionero/europcar/application/telemetry"
 	"github.com/fcorrionero/europcar/domain"
 	"github.com/fcorrionero/europcar/infrastructure/memory"
 	"github.com/fcorrionero/europcar/infrastructure/ui/http"
@@ -16,7 +17,7 @@ func InitializeVehicleRepository() domain.VehicleRepository {
 }
 
 func InitializeVehicleController(repository domain.VehicleRepository) http.VehicleController {
-	wire.Build(http.NewVehicleController, operations.NewInFleetVehicle, operations.NewInstallVehicle)
+	wire.Build(http.NewVehicleController, operations.NewInFleetVehicle, operations.NewInstallVehicle, telemetry.NewUpdateBattery)
 	return http.VehicleController{}
 }
 
