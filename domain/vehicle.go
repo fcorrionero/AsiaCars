@@ -34,7 +34,7 @@ func NewVehicle(chassisNbr string, licensePlate string, category string) (*Vehic
 	v.chassisNbr = chassisNbr
 	v.licensePlate = licensePlate
 	v.category = category
-	v.inFleetDate = time.Now()
+	//v.inFleetDate = time.Now()
 
 	return v, nil
 }

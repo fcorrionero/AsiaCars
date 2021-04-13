@@ -1,20 +1,23 @@
 package http
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/fcorrionero/europcar/application/operations"
+	"io/ioutil"
+	"log"
 	"net/http"
 )
 
 type VehicleController struct {
-	inFleetVehicle operations.InFleetVehicle
-	installVehicle operations.InstallVehicle
+	InFleetVehicle operations.InFleetVehicle
+	InstallVehicle operations.InstallVehicle
 }
 
 func NewVehicleController(iFV operations.InFleetVehicle, iV operations.InstallVehicle) VehicleController {
 	return VehicleController{
-		inFleetVehicle: iFV,
-		installVehicle: iV,
+		InFleetVehicle: iFV,
+		InstallVehicle: iV,
 	}
 }
 
@@ -35,6 +38,28 @@ func (c VehicleController) InFleet(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(405) // Return 405 Method Not Allowed.
 		return
 	}
+
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		log.Printf("Body read error, %v", err)
+		w.WriteHeader(500) // Return 500 Internal Server Error.
+		return
+	}
+	var schema operations.InFleetSchema
+	if err = json.Unmarshal(body, &schema); nil != err {
+		log.Printf("Body parse error, %v", err)
+		w.WriteHeader(400) // Return 400 Bad Request.
+		return
+	}
+
+	err = c.InFleetVehicle.Handle(schema)
+	if nil != err {
+		log.Printf("Error registering vehicle: %v", err)
+		w.WriteHeader(400)
+		return
+	}
+
+	w.WriteHeader(200)
 }
 
 func (c VehicleController) InstallDevice(w http.ResponseWriter, r *http.Request) {
@@ -42,4 +67,24 @@ func (c VehicleController) InstallDevice(w http.ResponseWriter, r *http.Request)
 		w.WriteHeader(405) // Return 405 Method Not Allowed.
 		return
 	}
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		log.Printf("Body read error, %v", err)
+		w.WriteHeader(500) // Return 500 Internal Server Error.
+		return
+	}
+
+	var schema operations.InstallSchema
+	if err = json.Unmarshal(body, &schema); nil != err {
+		log.Printf("Body parse error, %v", err)
+		w.WriteHeader(400) // Return 400 Bad Request.
+		return
+	}
+	err = c.InstallVehicle.Handle(schema)
+	if nil != err {
+		log.Printf("Error installing vehicle: %v", err)
+		w.WriteHeader(404)
+		return
+	}
+	w.WriteHeader(200)
 }
