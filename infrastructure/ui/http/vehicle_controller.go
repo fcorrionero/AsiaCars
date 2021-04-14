@@ -36,18 +36,6 @@ func NewVehicleController(
 	}
 }
 
-func HandleRequests(apiPort string, controller VehicleController) error {
-	http.HandleFunc("/hello", controller.Hello)
-	http.HandleFunc("/infleet", controller.InFleet)
-	http.HandleFunc("/install", controller.InstallDevice)
-	http.HandleFunc("/battery", controller.Battery)
-	http.HandleFunc("/fuel", controller.Fuel)
-	http.HandleFunc("/mileage", controller.Mileage)
-	http.HandleFunc("/telemetries", controller.Telemetries)
-	err := http.ListenAndServe(":"+apiPort, nil)
-	return err
-}
-
 func (c VehicleController) Hello(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Hello")
 }
