@@ -62,12 +62,18 @@ func (c VehicleController) InFleet(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Printf("Body read error, %v", err)
 		w.WriteHeader(500) // Return 500 Internal Server Error.
+		httpErr := NewHttpError(err.Error())
+		errTxt, _ := json.Marshal(httpErr)
+		w.Write(errTxt)
 		return
 	}
 	var schema operations.InFleetSchema
 	if err = json.Unmarshal(body, &schema); nil != err {
 		log.Printf("Body parse error, %v", err)
 		w.WriteHeader(400) // Return 400 Bad Request.
+		httpErr := NewHttpError("Request body can not be processed")
+		errTxt, _ := json.Marshal(httpErr)
+		w.Write(errTxt)
 		return
 	}
 
@@ -75,6 +81,9 @@ func (c VehicleController) InFleet(w http.ResponseWriter, r *http.Request) {
 	if nil != err {
 		log.Printf("Error registering vehicle: %v", err)
 		w.WriteHeader(400)
+		httpErr := NewHttpError(err.Error())
+		errTxt, _ := json.Marshal(httpErr)
+		w.Write(errTxt)
 		return
 	}
 
@@ -90,6 +99,9 @@ func (c VehicleController) InstallDevice(w http.ResponseWriter, r *http.Request)
 	if err != nil {
 		log.Printf("Body read error, %v", err)
 		w.WriteHeader(500) // Return 500 Internal Server Error.
+		httpErr := NewHttpError("Request body can not be processed")
+		errTxt, _ := json.Marshal(httpErr)
+		w.Write(errTxt)
 		return
 	}
 
@@ -97,12 +109,18 @@ func (c VehicleController) InstallDevice(w http.ResponseWriter, r *http.Request)
 	if err = json.Unmarshal(body, &schema); nil != err {
 		log.Printf("Body parse error, %v", err)
 		w.WriteHeader(400) // Return 400 Bad Request.
+		httpErr := NewHttpError("Request body can not be processed")
+		errTxt, _ := json.Marshal(httpErr)
+		w.Write(errTxt)
 		return
 	}
 	err = c.InstallVehicle.Handle(schema)
 	if nil != err {
 		log.Printf("Error installing vehicle: %v", err)
 		w.WriteHeader(404)
+		httpErr := NewHttpError(err.Error())
+		errTxt, _ := json.Marshal(httpErr)
+		w.Write(errTxt)
 		return
 	}
 	w.WriteHeader(200)
@@ -117,6 +135,9 @@ func (c VehicleController) Battery(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Printf("Body read error, %v", err)
 		w.WriteHeader(500) // Return 500 Internal Server Error.
+		httpErr := NewHttpError("Request body can not be processed")
+		errTxt, _ := json.Marshal(httpErr)
+		w.Write(errTxt)
 		return
 	}
 
@@ -124,12 +145,18 @@ func (c VehicleController) Battery(w http.ResponseWriter, r *http.Request) {
 	if err = json.Unmarshal(body, &schema); nil != err {
 		log.Printf("Body parse error, %v", err)
 		w.WriteHeader(400) // Return 400 Bad Request.
+		httpErr := NewHttpError("Request body can not be processed")
+		errTxt, _ := json.Marshal(httpErr)
+		w.Write(errTxt)
 		return
 	}
 	err = c.UpdateBattery.Handle(schema)
 	if nil != err {
 		log.Printf("Error updating battery value: %v", err)
 		w.WriteHeader(400)
+		httpErr := NewHttpError(err.Error())
+		errTxt, _ := json.Marshal(httpErr)
+		w.Write(errTxt)
 		return
 	}
 	w.WriteHeader(200)
@@ -144,6 +171,9 @@ func (c VehicleController) Fuel(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Printf("Body read error, %v", err)
 		w.WriteHeader(500) // Return 500 Internal Server Error.
+		httpErr := NewHttpError("Request body can not be processed")
+		errTxt, _ := json.Marshal(httpErr)
+		w.Write(errTxt)
 		return
 	}
 
@@ -151,12 +181,18 @@ func (c VehicleController) Fuel(w http.ResponseWriter, r *http.Request) {
 	if err = json.Unmarshal(body, &schema); nil != err {
 		log.Printf("Body parse error, %v", err)
 		w.WriteHeader(400) // Return 400 Bad Request.
+		httpErr := NewHttpError("Request body can not be processed")
+		errTxt, _ := json.Marshal(httpErr)
+		w.Write(errTxt)
 		return
 	}
 	err = c.UpdateFuel.Handle(schema)
 	if nil != err {
 		log.Printf("Error updating fuel value: %v", err)
 		w.WriteHeader(400)
+		httpErr := NewHttpError(err.Error())
+		errTxt, _ := json.Marshal(httpErr)
+		w.Write(errTxt)
 		return
 	}
 	w.WriteHeader(200)
@@ -171,6 +207,9 @@ func (c VehicleController) Mileage(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Printf("Body read error, %v", err)
 		w.WriteHeader(500) // Return 500 Internal Server Error.
+		httpErr := NewHttpError("Request body can not be processed")
+		errTxt, _ := json.Marshal(httpErr)
+		w.Write(errTxt)
 		return
 	}
 
@@ -178,12 +217,18 @@ func (c VehicleController) Mileage(w http.ResponseWriter, r *http.Request) {
 	if err = json.Unmarshal(body, &schema); nil != err {
 		log.Printf("Body parse error, %v", err)
 		w.WriteHeader(400) // Return 400 Bad Request.
+		httpErr := NewHttpError("Request body can not be processed")
+		errTxt, _ := json.Marshal(httpErr)
+		w.Write(errTxt)
 		return
 	}
 	err = c.UpdateMileage.Handle(schema)
 	if nil != err {
 		log.Printf("Error updating mileage: %v", err)
 		w.WriteHeader(400)
+		httpErr := NewHttpError(err.Error())
+		errTxt, _ := json.Marshal(httpErr)
+		w.Write(errTxt)
 		return
 	}
 	w.WriteHeader(200)
@@ -199,12 +244,18 @@ func (c VehicleController) Telemetries(w http.ResponseWriter, r *http.Request) {
 	if !ok || len(sN[0]) < 1 {
 		log.Println("Url Param 'serial_number' is missing")
 		w.WriteHeader(400)
+		httpErr := NewHttpError("Url Param 'serial_number' is missing")
+		errTxt, _ := json.Marshal(httpErr)
+		w.Write(errTxt)
 		return
 	}
 	schema := telemetry.TelemetriesSchema{DeviceSerialNumber: sN[0]}
 	res, err := c.GetTelemetries.Handle(schema)
 	if nil != err {
 		w.WriteHeader(404)
+		httpErr := NewHttpError(err.Error())
+		errTxt, _ := json.Marshal(httpErr)
+		w.Write(errTxt)
 		return
 	}
 	data, _ := json.Marshal(res)
