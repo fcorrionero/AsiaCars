@@ -48,7 +48,6 @@ func (c VehicleController) InFleet(w http.ResponseWriter, r *http.Request) {
 
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		log.Printf("Body read error, %v", err)
 		w.WriteHeader(500) // Return 500 Internal Server Error.
 		httpErr := NewHttpError(err.Error())
 		errTxt, _ := json.Marshal(httpErr)
@@ -57,7 +56,6 @@ func (c VehicleController) InFleet(w http.ResponseWriter, r *http.Request) {
 	}
 	var schema operations.InFleetSchema
 	if err = json.Unmarshal(body, &schema); nil != err {
-		log.Printf("Body parse error, %v", err)
 		w.WriteHeader(400) // Return 400 Bad Request.
 		httpErr := NewHttpError("Request body can not be processed")
 		errTxt, _ := json.Marshal(httpErr)
@@ -67,7 +65,6 @@ func (c VehicleController) InFleet(w http.ResponseWriter, r *http.Request) {
 
 	err = c.InFleetVehicle.Handle(schema)
 	if nil != err {
-		log.Printf("Error registering vehicle: %v", err)
 		w.WriteHeader(400)
 		httpErr := NewHttpError(err.Error())
 		errTxt, _ := json.Marshal(httpErr)

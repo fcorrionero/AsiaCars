@@ -108,3 +108,30 @@ func TestBadMethodInFleet(t *testing.T) {
 		t.Fatalf("405 status code should be returned")
 	}
 }
+
+func TestBadBodyInFleet(t *testing.T) {
+	jsonValue, _ := json.Marshal("")
+	res, err := gHttp.Post("http://localhost:8888/infleet", "application/json", bytes.NewBuffer(jsonValue))
+	if nil != err {
+		t.Fatalf(err.Error())
+	}
+	if 400 != res.StatusCode {
+		t.Fatalf("400 status code should be returned")
+	}
+}
+
+func TestBadDataInFleet(t *testing.T) {
+	values := map[string]string{
+		"chassis_number": "invalid",
+		"license_plate":  test.ValidLicensePlate,
+		"category":       test.ValidCategory,
+	}
+	jsonValue, _ := json.Marshal(values)
+	res, err := gHttp.Post("http://localhost:8888/infleet", "application/json", bytes.NewBuffer(jsonValue))
+	if nil != err {
+		t.Fatalf(err.Error())
+	}
+	if 400 != res.StatusCode {
+		t.Fatalf("400 status code should be returned instead %d", res.StatusCode)
+	}
+}
