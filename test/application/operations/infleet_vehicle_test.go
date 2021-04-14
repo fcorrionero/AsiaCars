@@ -6,13 +6,15 @@ import (
 	"github.com/fcorrionero/europcar/test/mocks"
 	"github.com/golang/mock/gomock"
 	"testing"
+	"time"
 )
 
 func TestVehicleShouldBeAdded(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	defer mockCtrl.Finish()
 
-	v, _ := test.GetVehicle()
+	date := time.Now()
+	v, _ := test.GetVehicleWithParams(test.ValidChassisNbr, test.ValidLicensePlate, test.ValidCategory, date)
 	mockRepo := mocks.NewMockVehicleRepository(mockCtrl)
 	mockRepo.EXPECT().Save(v).Return(nil).Times(1)
 
@@ -20,6 +22,7 @@ func TestVehicleShouldBeAdded(t *testing.T) {
 		ChassisNbr:   test.ValidChassisNbr,
 		LicensePlate: test.ValidLicensePlate,
 		Category:     test.ValidCategory,
+		InFleetDate:  date,
 	}
 	c := operations.NewInFleetVehicle(mockRepo)
 	err := c.Handle(schema)

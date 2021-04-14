@@ -5,10 +5,11 @@ import (
 	"github.com/fcorrionero/europcar/test"
 	"reflect"
 	"testing"
+	"time"
 )
 
 func TestVehicleShouldBeCreated(t *testing.T) {
-	_, err := domain.NewVehicle(test.ValidChassisNbr, test.ValidLicensePlate, test.ValidCategory)
+	_, err := domain.NewVehicle(test.ValidChassisNbr, test.ValidLicensePlate, test.ValidCategory, time.Now())
 	if nil != err {
 		t.Fatalf(`Error creating vehicle: %v`, err)
 	}
@@ -28,7 +29,7 @@ func TestOnlyValidChassisNbrAreAllowed(t *testing.T) {
 	}
 
 	for _, c := range chassisNbrs {
-		_, err := domain.NewVehicle(c.value, test.ValidLicensePlate, test.ValidCategory)
+		_, err := domain.NewVehicle(c.value, test.ValidLicensePlate, test.ValidCategory, time.Now())
 		if reflect.TypeOf(err) != reflect.TypeOf(c.expected) {
 			t.Errorf("Expected: %v, got: %v", reflect.TypeOf(c.expected), reflect.TypeOf(err))
 		}
@@ -47,7 +48,7 @@ func TestOnlyValidLicensePlatesAreAllowed(t *testing.T) {
 	}
 
 	for _, l := range licensePlates {
-		_, err := domain.NewVehicle(test.ValidChassisNbr, l.value, test.ValidCategory)
+		_, err := domain.NewVehicle(test.ValidChassisNbr, l.value, test.ValidCategory, time.Now())
 		if reflect.TypeOf(err) != reflect.TypeOf(l.expected) {
 			t.Errorf("Expected (%s): %v, got: %v", l.value, reflect.TypeOf(l.expected), reflect.TypeOf(err))
 		}
@@ -66,7 +67,7 @@ func TestOnlyValidCategoriesAreAllowed(t *testing.T) {
 	}
 
 	for _, c := range categories {
-		_, err := domain.NewVehicle(test.ValidChassisNbr, test.ValidLicensePlate, c.value)
+		_, err := domain.NewVehicle(test.ValidChassisNbr, test.ValidLicensePlate, c.value, time.Now())
 		if reflect.TypeOf(err) != reflect.TypeOf(c.expected) {
 			t.Errorf("Expected (%s): %v, got: %v", c.value, reflect.TypeOf(c.expected), reflect.TypeOf(err))
 		}
@@ -94,9 +95,10 @@ func TestAllValidAcrissCodes(t *testing.T) {
 		}
 	}
 
+	date := time.Now()
 	for _, cmb2 := range comb2 {
 		for _, c4 := range s4 {
-			_, err := domain.NewVehicle(test.ValidChassisNbr, test.ValidLicensePlate, cmb2+string(c4))
+			_, err := domain.NewVehicle(test.ValidChassisNbr, test.ValidLicensePlate, cmb2+string(c4), date)
 			if nil != err {
 				t.Errorf("error with valid acriss code")
 			}

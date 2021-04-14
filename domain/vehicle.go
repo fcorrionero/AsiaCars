@@ -17,7 +17,7 @@ type Vehicle struct {
 	currentMileage     int
 }
 
-func NewVehicle(chassisNbr string, licensePlate string, category string) (*Vehicle, error) {
+func NewVehicle(chassisNbr string, licensePlate string, category string, date time.Time) (*Vehicle, error) {
 	v := new(Vehicle)
 	if !checkChassisNbr(chassisNbr) {
 		return v, NewDomainError("incorrect chassis number")
@@ -34,7 +34,7 @@ func NewVehicle(chassisNbr string, licensePlate string, category string) (*Vehic
 	v.chassisNbr = chassisNbr
 	v.licensePlate = licensePlate
 	v.category = category
-	//v.inFleetDate = time.Now()
+	v.inFleetDate = date
 
 	return v, nil
 }
