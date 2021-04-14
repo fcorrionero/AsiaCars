@@ -16,6 +16,7 @@ type VehicleController struct {
 	UpdateBattery  telemetry.UpdateBattery
 	UpdateFuel     telemetry.UpdateFuel
 	UpdateMileage  telemetry.UpdateMileage
+	GetTelemetries telemetry.GetTelemetries
 }
 
 func NewVehicleController(
@@ -23,13 +24,15 @@ func NewVehicleController(
 	iV operations.InstallVehicle,
 	uB telemetry.UpdateBattery,
 	uF telemetry.UpdateFuel,
-	uM telemetry.UpdateMileage) VehicleController {
+	uM telemetry.UpdateMileage,
+	gT telemetry.GetTelemetries) VehicleController {
 	return VehicleController{
 		InFleetVehicle: iFV,
 		InstallVehicle: iV,
 		UpdateBattery:  uB,
 		UpdateFuel:     uF,
 		UpdateMileage:  uM,
+		GetTelemetries: gT,
 	}
 }
 
@@ -40,6 +43,7 @@ func HandleRequests(apiPort string, controller VehicleController) error {
 	http.HandleFunc("/battery", controller.Battery)
 	http.HandleFunc("/fuel", controller.Fuel)
 	http.HandleFunc("/mileage", controller.Mileage)
+	http.HandleFunc("/telemetries", controller.Telemetries)
 	err := http.ListenAndServe(":"+apiPort, nil)
 	return err
 }
@@ -183,4 +187,33 @@ func (c VehicleController) Mileage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.WriteHeader(200)
+}
+
+func (c VehicleController) Telemetries(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		w.WriteHeader(405) // Return 405 Method Not Allowed.
+		return
+	}
+
+	sN, ok := r.URL.Query()["serial_number"]
+	if !ok || len(sN[0]) < 1 {
+		log.Println("Url Param 'serial_number' is missing")
+		w.WriteHeader(400)
+		return
+	}
+	schema := telemetry.TelemetriesSchema{DeviceSerialNumber: sN[0]}
+	res, err := c.GetTelemetries.Handle(schema)
+	if nil != err {
+		w.WriteHeader(404)
+		return
+	}
+	data, _ := json.Marshal(res)
+	w.WriteHeader(200)
+	_, err = w.Write(data)
+	if nil != err {
+		log.Println(err)
+		w.WriteHeader(500)
+		return
+	}
+	return
 }

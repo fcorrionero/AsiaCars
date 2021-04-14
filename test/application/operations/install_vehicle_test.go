@@ -16,12 +16,12 @@ func TestVehicleShouldBeInstalled(t *testing.T) {
 	v, _ := test.GetVehicle()
 	mockRepo := mocks.NewMockVehicleRepository(mockCtrl)
 	mockRepo.EXPECT().FindByChassisNumber(test.ValidChassisNbr).Times(1).Return(v, nil)
-	v.DeviceSerialNumber = "test-serial-number"
+	v.DeviceSerialNumber = test.ValidDeviceSerialNbr
 	mockRepo.EXPECT().Save(v).Times(1).Return(nil)
 
 	c := operations.NewInstallVehicle(mockRepo)
 	schema := operations.InstallSchema{
-		DeviceSerialNumber: "test-serial-number",
+		DeviceSerialNumber: test.ValidDeviceSerialNbr,
 		ChassisNumber:      test.ValidChassisNbr,
 	}
 	err := c.Handle(schema)
@@ -39,7 +39,7 @@ func TestVehicleShouldNotBeInstalled(t *testing.T) {
 
 	c := operations.NewInstallVehicle(mockRepo)
 	schema := operations.InstallSchema{
-		DeviceSerialNumber: "test-serial-number",
+		DeviceSerialNumber: test.ValidDeviceSerialNbr,
 		ChassisNumber:      test.ValidChassisNbr,
 	}
 

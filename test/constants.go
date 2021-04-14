@@ -3,9 +3,10 @@ package test
 import "github.com/fcorrionero/europcar/domain"
 
 const (
-	ValidChassisNbr   = "A23DS6RW9WlK11D67"
-	ValidLicensePlate = "4587JKM"
-	ValidCategory     = "MBMR"
+	ValidChassisNbr      = "A23DS6RW9WlK11D67"
+	ValidLicensePlate    = "4587JKM"
+	ValidCategory        = "MBMR"
+	ValidDeviceSerialNbr = "G-654789"
 )
 
 func GetVehicle() (*domain.Vehicle, error) {

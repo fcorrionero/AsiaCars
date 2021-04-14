@@ -14,6 +14,7 @@ func TestBatteryShouldBeUpdated(t *testing.T) {
 	defer mockCtrl.Finish()
 
 	v, _ := test.GetVehicle()
+	v.DeviceSerialNumber = "G-654789"
 	mockRepo := mocks.NewMockVehicleRepository(mockCtrl)
 	mockRepo.EXPECT().FindByDeviceSerialNumber(v.DeviceSerialNumber).Return(v, nil).Times(1)
 	mockRepo.EXPECT().Save(v).Return(nil)
@@ -35,6 +36,7 @@ func TestANegativeBatteryValueShouldReturnAnError(t *testing.T) {
 	defer mockCtrl.Finish()
 
 	v, _ := test.GetVehicle()
+	v.DeviceSerialNumber = "G-654789"
 	mockRepo := mocks.NewMockVehicleRepository(mockCtrl)
 	mockRepo.EXPECT().FindByDeviceSerialNumber(v.DeviceSerialNumber).Return(v, nil).Times(1)
 	c := telemetry.NewUpdateBattery(mockRepo)
@@ -54,6 +56,7 @@ func TestNotFoundVehicleShouldReturnAnError(t *testing.T) {
 	defer mockCtrl.Finish()
 
 	v := new(domain.Vehicle)
+	v.DeviceSerialNumber = "G-654789"
 	mockRepo := mocks.NewMockVehicleRepository(mockCtrl)
 	mockRepo.EXPECT().FindByDeviceSerialNumber(v.DeviceSerialNumber).Return(v, domain.NewDomainError("")).Times(1)
 	c := telemetry.NewUpdateBattery(mockRepo)

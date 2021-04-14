@@ -26,7 +26,8 @@ func InitializeVehicleController(repository domain.VehicleRepository) http.Vehic
 	updateBattery := telemetry.NewUpdateBattery(repository)
 	updateFuel := telemetry.NewUpdateFuel(repository)
 	updateMileage := telemetry.NewUpdateMileage(repository)
-	vehicleController := http.NewVehicleController(inFleetVehicle, installVehicle, updateBattery, updateFuel, updateMileage)
+	getTelemetries := telemetry.NewGetTelemetries(repository)
+	vehicleController := http.NewVehicleController(inFleetVehicle, installVehicle, updateBattery, updateFuel, updateMileage, getTelemetries)
 	return vehicleController
 }
 

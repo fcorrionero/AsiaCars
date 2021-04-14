@@ -87,6 +87,14 @@ func (v *Vehicle) GetChassisNumber() string {
 	return v.chassisNbr
 }
 
-func (v Vehicle) GetFuelLevel() int {
+func (v *Vehicle) GetFuelLevel() int {
 	return v.fuelLevel
+}
+
+func (v *Vehicle) GetBatteryLevel() int {
+	return v.batteryLevel
+}
+
+func (v *Vehicle) GetCurrentMilleage() int {
+	return v.currentMileage
 }

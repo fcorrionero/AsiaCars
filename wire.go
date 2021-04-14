@@ -24,6 +24,7 @@ func InitializeVehicleController(repository domain.VehicleRepository) http.Vehic
 		telemetry.NewUpdateBattery,
 		telemetry.NewUpdateFuel,
 		telemetry.NewUpdateMileage,
+		telemetry.NewGetTelemetries,
 	)
 	return http.VehicleController{}
 }
