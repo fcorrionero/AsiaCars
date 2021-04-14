@@ -10,7 +10,7 @@ import (
 )
 
 // RandStringChassisNumber consumes time but we could omit it as is constant
-// as Save method uses a for loop and increments for each iteration of the benchmark save O(N)
+// Save method uses a for loop and it increments its computation time for each iteration of the benchmark O(N)
 func BenchmarkSave(b *testing.B) {
 	repo := memory.New()
 	for i := 0; i < b.N; i++ {
