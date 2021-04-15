@@ -86,3 +86,5 @@ In order to improve the application we could develop a queue system to handle la
 when a request arrives to our API it will be enqueued to later processing.
 Other improvement could be developed using CQRS to separate readings and writings, using separated persistence systems (raead
 and write models).
+Other services like redis, Amazon ElasticCache, etc are available solutions to use a shared database between multiples
+instances of our app.
