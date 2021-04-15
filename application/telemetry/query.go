@@ -31,6 +31,6 @@ func (c GetTelemetries) Handle(data TelemetriesSchema) (TelResponseSchema, error
 	res.DeviceSerialNumber = v.DeviceSerialNumber
 	res.FuelLevel = v.GetFuelLevel()
 	res.BatteryLevel = v.GetBatteryLevel()
-	res.Mileage = v.GetCurrentMilleage()
+	res.Mileage = v.GetCurrentMileage()
 	return res, nil
 }

@@ -95,6 +95,6 @@ func (v *Vehicle) GetBatteryLevel() int {
 	return v.batteryLevel
 }
 
-func (v *Vehicle) GetCurrentMilleage() int {
+func (v *Vehicle) GetCurrentMileage() int {
 	return v.currentMileage
 }
