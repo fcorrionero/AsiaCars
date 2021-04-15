@@ -20,15 +20,20 @@ func InitializeVehicleRepository() domain.VehicleRepository {
 	return vehicleRepository
 }
 
-func InitializeVehicleController(repository domain.VehicleRepository) http.VehicleController {
+func InitializeOperationsController(repository domain.VehicleRepository) http.OperationsController {
 	inFleetVehicle := operations.NewInFleetVehicle(repository)
 	installVehicle := operations.NewInstallVehicle(repository)
+	operationsController := http.NewOperationsController(inFleetVehicle, installVehicle)
+	return operationsController
+}
+
+func InitializeTelemetriesController(repository domain.VehicleRepository) http.TelemetriesController {
 	updateBattery := telemetry.NewUpdateBattery(repository)
 	updateFuel := telemetry.NewUpdateFuel(repository)
 	updateMileage := telemetry.NewUpdateMileage(repository)
 	getTelemetries := telemetry.NewGetTelemetries(repository)
-	vehicleController := http.NewVehicleController(inFleetVehicle, installVehicle, updateBattery, updateFuel, updateMileage, getTelemetries)
-	return vehicleController
+	telemetriesController := http.NewTelemetriesController(updateBattery, updateFuel, updateMileage, getTelemetries)
+	return telemetriesController
 }
 
 // wire.go:

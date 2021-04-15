@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/fcorrionero/europcar/application/operations"
-	"github.com/fcorrionero/europcar/application/telemetry"
 	"github.com/fcorrionero/europcar/infrastructure/memory"
 	"github.com/fcorrionero/europcar/infrastructure/ui/http"
 	"github.com/fcorrionero/europcar/test"
@@ -45,19 +44,11 @@ func startServer(wg *sync.WaitGroup) *gHttp.Server {
 	vR := memory.New()
 	inFleetVehicle := operations.NewInFleetVehicle(vR)
 	installVehicle := operations.NewInstallVehicle(vR)
-	updateBattery := telemetry.NewUpdateBattery(vR)
-	updateFuel := telemetry.NewUpdateFuel(vR)
-	updateMileage := telemetry.NewUpdateMileage(vR)
-	getTelemetries := telemetry.NewGetTelemetries(vR)
 
-	vC := http.NewVehicleController(inFleetVehicle, installVehicle, updateBattery, updateFuel, updateMileage, getTelemetries)
-	gHttp.HandleFunc("/hello", vC.Hello)
-	gHttp.HandleFunc("/infleet", vC.InFleet)
-	gHttp.HandleFunc("/install", vC.InstallDevice)
-	gHttp.HandleFunc("/battery", vC.Battery)
-	gHttp.HandleFunc("/fuel", vC.Fuel)
-	gHttp.HandleFunc("/mileage", vC.Mileage)
-	gHttp.HandleFunc("/telemetries", vC.Telemetries)
+	oC := http.NewOperationsController(inFleetVehicle, installVehicle)
+	gHttp.HandleFunc("/hello", oC.Hello)
+	gHttp.HandleFunc("/infleet", oC.InFleet)
+	gHttp.HandleFunc("/install", oC.InstallDevice)
 
 	go func() {
 		defer wg.Done() // let main know we are done cleaning up

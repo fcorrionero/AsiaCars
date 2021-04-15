@@ -2,34 +2,25 @@ package http
 
 import (
 	"encoding/json"
-	"fmt"
-	"github.com/fcorrionero/europcar/application/operations"
 	"github.com/fcorrionero/europcar/application/telemetry"
 	"io/ioutil"
 	"log"
 	"net/http"
-	"time"
 )
 
-type VehicleController struct {
-	InFleetVehicle operations.InFleetVehicle
-	InstallVehicle operations.InstallVehicle
+type TelemetriesController struct {
 	UpdateBattery  telemetry.UpdateBattery
 	UpdateFuel     telemetry.UpdateFuel
 	UpdateMileage  telemetry.UpdateMileage
 	GetTelemetries telemetry.GetTelemetries
 }
 
-func NewVehicleController(
-	iFV operations.InFleetVehicle,
-	iV operations.InstallVehicle,
+func NewTelemetriesController(
 	uB telemetry.UpdateBattery,
 	uF telemetry.UpdateFuel,
 	uM telemetry.UpdateMileage,
-	gT telemetry.GetTelemetries) VehicleController {
-	return VehicleController{
-		InFleetVehicle: iFV,
-		InstallVehicle: iV,
+	gT telemetry.GetTelemetries) TelemetriesController {
+	return TelemetriesController{
 		UpdateBattery:  uB,
 		UpdateFuel:     uF,
 		UpdateMileage:  uM,
@@ -37,83 +28,7 @@ func NewVehicleController(
 	}
 }
 
-func (c VehicleController) Hello(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hello")
-}
-
-func (c VehicleController) InFleet(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
-		w.WriteHeader(405) // Return 405 Method Not Allowed.
-		return
-	}
-
-	body, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		w.WriteHeader(500) // Return 500 Internal Server Error.
-		httpErr := NewHttpError(err.Error())
-		errTxt, _ := json.Marshal(httpErr)
-		w.Write(errTxt)
-		return
-	}
-	var schema operations.InFleetSchema
-	if err = json.Unmarshal(body, &schema); nil != err {
-		w.WriteHeader(400) // Return 400 Bad Request.
-		httpErr := NewHttpError("Request body can not be processed")
-		errTxt, _ := json.Marshal(httpErr)
-		w.Write(errTxt)
-		return
-	}
-	schema.InFleetDate = time.Now()
-
-	err = c.InFleetVehicle.Handle(schema)
-	if nil != err {
-		w.WriteHeader(400)
-		httpErr := NewHttpError(err.Error())
-		errTxt, _ := json.Marshal(httpErr)
-		w.Write(errTxt)
-		return
-	}
-
-	w.WriteHeader(200)
-}
-
-func (c VehicleController) InstallDevice(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
-		w.WriteHeader(405) // Return 405 Method Not Allowed.
-		return
-	}
-	body, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		log.Printf("Body read error, %v", err)
-		w.WriteHeader(500) // Return 500 Internal Server Error.
-		httpErr := NewHttpError("Request body can not be processed")
-		errTxt, _ := json.Marshal(httpErr)
-		w.Write(errTxt)
-		return
-	}
-
-	var schema operations.InstallSchema
-	if err = json.Unmarshal(body, &schema); nil != err {
-		log.Printf("Body parse error, %v", err)
-		w.WriteHeader(400) // Return 400 Bad Request.
-		httpErr := NewHttpError("Request body can not be processed")
-		errTxt, _ := json.Marshal(httpErr)
-		w.Write(errTxt)
-		return
-	}
-	err = c.InstallVehicle.Handle(schema)
-	if nil != err {
-		log.Printf("Error installing vehicle: %v", err)
-		w.WriteHeader(404)
-		httpErr := NewHttpError(err.Error())
-		errTxt, _ := json.Marshal(httpErr)
-		w.Write(errTxt)
-		return
-	}
-	w.WriteHeader(200)
-}
-
-func (c VehicleController) Battery(w http.ResponseWriter, r *http.Request) {
+func (c TelemetriesController) Battery(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		w.WriteHeader(405) // Return 405 Method Not Allowed.
 		return
@@ -149,7 +64,7 @@ func (c VehicleController) Battery(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(200)
 }
 
-func (c VehicleController) Fuel(w http.ResponseWriter, r *http.Request) {
+func (c TelemetriesController) Fuel(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		w.WriteHeader(405) // Return 405 Method Not Allowed.
 		return
@@ -185,7 +100,7 @@ func (c VehicleController) Fuel(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(200)
 }
 
-func (c VehicleController) Mileage(w http.ResponseWriter, r *http.Request) {
+func (c TelemetriesController) Mileage(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		w.WriteHeader(405) // Return 405 Method Not Allowed.
 		return
@@ -221,7 +136,7 @@ func (c VehicleController) Mileage(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(200)
 }
 
-func (c VehicleController) Telemetries(w http.ResponseWriter, r *http.Request) {
+func (c TelemetriesController) Telemetries(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		w.WriteHeader(405) // Return 405 Method Not Allowed.
 		return
