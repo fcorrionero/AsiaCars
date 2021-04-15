@@ -23,7 +23,7 @@ func NewOperationsController(iFV operations.InFleetVehicle, iV operations.Instal
 }
 
 func (c OperationsController) Hello(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hello")
+	fmt.Fprintf(w, "Wellcome to Asia Cars")
 }
 
 func (c OperationsController) InFleet(w http.ResponseWriter, r *http.Request) {
