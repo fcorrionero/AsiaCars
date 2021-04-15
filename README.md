@@ -20,6 +20,8 @@ go test ./test/...
 Inside `test` folder you will find unit tests for application and domain files. Integration tests for vehicle repository
 and functional tests fo http controllers. Also, there is an example of benchmark for vehicle repository Save method.
 
+To run infrastructure/ui/http tests you must execute first `cp .env.dist .env` from project root.
+
 ### Make requests
 As in PROBLEM.md file is shown there are two types of requests, **operations** and **telemetries**.
 Below are examples to make these requests.
