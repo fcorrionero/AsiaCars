@@ -6,7 +6,7 @@ import (
 )
 
 type memoryVehicle struct {
-	mu      sync.Mutex
+	lock    sync.Mutex
 	Vehicle *domain.Vehicle
 }
 
@@ -43,9 +43,9 @@ func (vR *VehicleRepository) FindByDeviceSerialNumber(srlNbr string) (*domain.Ve
 func (vR *VehicleRepository) Save(vehicle *domain.Vehicle) error {
 	for i, mV := range vR.Vehicles {
 		if mV.Vehicle.DeviceSerialNumber == vehicle.DeviceSerialNumber || mV.Vehicle.GetChassisNumber() == vehicle.GetChassisNumber() {
-			mV.mu.Lock()
+			mV.lock.Lock()
 			mV.Vehicle = vehicle
-			mV.mu.Unlock()
+			mV.lock.Unlock()
 
 			vR.Vehicles[i] = mV
 			return nil
