@@ -42,7 +42,7 @@ func (vR *VehicleRepository) FindByDeviceSerialNumber(srlNbr string) (*domain.Ve
 
 func (vR *VehicleRepository) Save(vehicle *domain.Vehicle) error {
 	for i, mV := range vR.Vehicles {
-		if mV.Vehicle.DeviceSerialNumber == vehicle.DeviceSerialNumber || mV.Vehicle.GetChassisNumber() == vehicle.GetChassisNumber() {
+		if (len(mV.Vehicle.DeviceSerialNumber) > 0 && mV.Vehicle.DeviceSerialNumber == vehicle.DeviceSerialNumber) || mV.Vehicle.GetChassisNumber() == vehicle.GetChassisNumber() {
 			mV.lock.Lock()
 			mV.Vehicle = vehicle
 			mV.lock.Unlock()
