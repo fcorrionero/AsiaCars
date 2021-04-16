@@ -63,7 +63,7 @@ curl -H "Content-Type: application/json" --request POST -d '{"serial_number": "G
 ```
 </li>
 <li>
-Milleage
+Mileage
 
 ```
 curl -H "Content-Type: application/json" --request POST -d '{"serial_number": "G-34567","mileage": 1000,"unit": "km"}' http://localhost:8888/mileage
