@@ -1,6 +1,6 @@
 # Asia Cars
 
-### Install and compile project
+### Install and compile the project
 ```
 mkdir -p build && cp .env.dist ./build/.env
 go build -o build/asia_cars
@@ -10,20 +10,20 @@ go build -o build/asia_cars
 cd build/
 ./asia_cars
 ```
-When these commands are executed, you can test the application by going to http://localhost:8888/hello in your browser.
+When these commands are executed, you can test the application on http://localhost:8888/hello.
 The default port is `8888` and could be configured in .env file.
 
 ### Run all tests
 ```
 go test ./test/...
 ```
-Inside `test` folder you will find unit tests for application and domain files. Integration tests for vehicle repository
-and functional tests fo http controllers. Also, there is an example of benchmark for vehicle repository Save method.
+Inside `test` folder you will find unit tests for application and domain. Also, integration tests for vehicle repository
+and functional tests fo http controllers. I included an example of benchmark for vehicle repository Save method.
 
-To run infrastructure/ui/http tests you must execute first `cp .env.dist .env` from project root.
+To run infrastructure/ui/http tests you must execute first `cp .env.dist .env` from the root of the project directory.
 
 ### Make requests
-As in PROBLEM.md file is shown there are two types of requests, **operations** and **telemetries**.
+There are two types of requests, **operations** and **telemetries**.
 Below are examples to make these requests.
 
 #### Operations
@@ -85,8 +85,8 @@ stop the application.
 
 ### Roadmap
 In order to improve the application we could develop a queue system to handle large number of requests, in a manner that
-when a request arrives to our API it will be enqueued to later processing.
-Other improvement could be developed using CQRS to separate readings and writings, using separated persistence systems (raead
+when a request arrives to our API it will be enqueued to be processed later.
+Other improvement could the use of CQRS to separate readings and writings, using separated persistence systems (read
 and write models).
-Other services like redis, Amazon ElasticCache, etc are available solutions to use a shared database between multiples
+Other services like redis, Amazon ElasticCache, etc are available solutions to used as shared database between multiples
 instances of our app.
